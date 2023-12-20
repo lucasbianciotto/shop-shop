@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% block contenu %}
+
+
+<div class="table-responsive">
+<table class="table">
+<thead>
+<tr>
+<th scope="col">ID</th>
+<th scope="col">Libelle</th>
+<th scope="col">Action</th>
+</tr>
+</thead>
+<tbody>
+{% for u in liste %}
+<tr><td>{{u.id}}</td><td>{{u.libelle}}</td><td><a href="index.php?page=utilisateurModif&id={{u.id}}" class="btn btn-outline-primary">Modifier</a> <a class="btn btn-outline-danger" href="index.php?page=type&id={{u.id}}">Supprimer</a></td></tr>
+{% endfor %}
+</tbody>
+</table>
+<a class="btn btn-primary" href="index.php?page=addtype">Ajouter un Type</a>
+
+</div>
+
+{% endblock %}

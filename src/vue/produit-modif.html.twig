@@ -1,0 +1,56 @@
+{% extends "base.html.twig" %}
+{% block title %} {{ parent() }} Modifier un Produit {% endblock %}
+{% block contenu %}
+{% if form.produit is defined %}
+{% if form.produit != null %}
+<div class="container">
+    <h2>Modifier un Produit</h2>
+
+    {% if form.message is defined %}
+    <h2 class="alert alert-danger" role="alert">{{ form.message }}</h2>
+    {% endif %}
+
+    {% if form.success is defined %}
+    <h2 class="alert alert-success" role="alert">{{ form.success }}</h2>
+    {% endif %}
+    
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="inputDesignation">Nom du produit :</label>
+            <input type="text" class="form-control" id="nom" name="inputDesignation" placeholder="Entrez le nom du produit" value="{{form.produit.designation}}" required>
+        </div>
+        <div class="form-group">
+            <label for="inputDescription">Description :</label>
+            <textarea class="form-control" id="description" name="inputDescription" placeholder="Entrez la description du produit" rows="4" required>{{form.produit.description}}</textarea>
+        </div>
+        <div class="form-group">
+            <label for="inputPrix">Prix :</label>
+            <input type="number" class="form-control" id="prix" name="inputPrix" placeholder="Entrez le prix du produit" value="{{form.produit.prix}}" required>
+        </div>
+        <div class="form-group">
+            <label for="idType">Type :</label>
+            
+            <select class="form-control" id="idType" name="idType" required>
+                {% for type in form.types %}
+                {% if type.id == form.produit.idType %}
+                <option value="{{type.id}}" selected>{{type.libelle}}</option>
+                {% else %}
+                <option value="{{type.id}}">{{type.libelle}}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+        </div>
+        <input type="hidden" name="id" value="{{form.produit.id}}">
+        <button type="submit" name="btnModifier" class="btn btn-primary">Modifier le produit</button>
+    </form>
+</div>
+{% else %}
+<h2 class="alert alert-danger" role="alert">{{ form.message }}</h2>
+<a href="index.php?page=utilisateur">Retourner sur la liste des produits</a>
+{% endif %}
+{% else %}
+<h2 class="alert alert-danger" role="alert">{{ form.message }}</h2>
+<a href="index.php?page=utilisateur">Retourner sur la liste des produits</a>
+{% endif %}
+{% endblock %}

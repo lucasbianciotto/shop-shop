@@ -1,0 +1,25 @@
+{% extends "base.html.twig" %}
+
+{% block contenu %}
+
+<div class="container">
+    <h2>Ajouter un Type</h2>
+
+    {% if form.message is defined %}
+        <div class="alert alert-{{form.typeMessage}}">
+            {{form.message}}
+        </div>
+    {% endif %}
+
+    <p>{{form.message}}</p>
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="inputDesignation">Libelle :</label>
+            <input type="text" class="form-control" id="nom" name="inputDesignation" placeholder="Entrez le nom du produit" required>
+        </div>
+        <button type="submit"  name="btAjouter" class="btn btn-primary">Ajouter le Type</button>
+    </form>
+</div>
+
+{% endblock %}

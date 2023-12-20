@@ -1,0 +1,35 @@
+{% extends "base.html.twig" %}
+
+{% block contenu %}
+
+
+<div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                <th scope="col">ID</th>
+                <th scope="col">Designation</th>
+                <th scope="col">Description</th>
+                <th scope="col">Prix</th>
+                <th scope="col">Type</th>
+                <th scope="col">Action</th>
+                </tr>
+            </thead>
+        <tbody>
+            {% for p in liste %}
+            <tr><td>{{p.id}}</td><td>{{p.designation}}</td><td>{{p.description}}</td><td>{{p.prix}} €</td><td>{{p.idType}}</td><td>
+            <a class="btn btn-outline-primary" href="index.php?page=modifproduit&id={{p.id}}">Modifier</a> 
+            <a class="btn btn-outline-danger" href="index.php?page=modifproduit&id={{p.id}}">Supprimer</a></td></tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <a class="btn btn-primary" href="index.php?page=addproduit">Ajouter un produit</a>
+</div>
+
+{% endblock %}
+
+
+
+
+

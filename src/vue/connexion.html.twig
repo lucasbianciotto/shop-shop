@@ -1,0 +1,29 @@
+{% extends 'base.html.twig' %}
+
+{% block contenu %}
+    
+<div class="container">
+    <h1>Connexion</h1>
+
+    <p>{{form.message}}</p>
+
+    <form method="post" action="">
+        <div class="mb-3">
+            <label for="inputEmail" class="form-label">Adresse e-mail:</label>
+            <input type="text" class="form-control" id="inputEmail" name="inputEmail" value="" required autofocus>
+        </div>
+        <div class="mb-3">
+            <label for="inputPassword" class="form-label">Mot de passe:</label>
+            <input type="password" class="form-control" id="inputPassword" name="inputPassword" required>
+        </div>
+        <div class="mb-3 form-check">
+            <input type="checkbox" class="form-check-input" id="remember_me" name="_remember_me" checked>
+            <label class="form-check-label" for="remember_me">Se souvenir de moi</label>
+        </div>
+        <div>
+            <button type="submit" class="btn btn-primary" id="btConnecter" name="btConnecter">Se connecter</button>
+        </div>
+    </form>
+</div>
+    
+{% endblock %}
