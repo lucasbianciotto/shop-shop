@@ -8,20 +8,27 @@ class Produit {
     private $connect;
     private $update;
     private $selectById;
+    private $delete;
+    private $selectLimit;
+    private $selectCount;
+    private $recherche;
 
     public function __construct($db) {
         $this->db = $db;
-        $this->insert = $this->db->prepare("insert into produit(designation, description, prix, idType) values (:designation, :description, :prix, :idType)");
+        $this->insert = $this->db->prepare("insert into produit(designation, description, prix, photo, idType) values (:designation, :description, :prix, :photo, :idType)");
         $this->connect = $this->db->prepare("select * from produit where designation=:designation");
         $this->select = $db->prepare("select * from produit order by designation");
         $this->selectById = $db->prepare("select * from produit where id=:id");
-        $this->update = $db->prepare("update produit set designation=:designation, description=:description, prix=:prix, idType=:idType where id=:id");
-
+        $this->update = $db->prepare("update produit set designation=:designation, description=:description, prix=:prix, photo=:photo, idType=:idType where id=:id");
+        $this->delete = $db->prepare("delete from produit where id=:id");
+        $this->selectLimit = $db->prepare("select id, designation,description,prix, idType from produit order by designation limit :inf,:limite");
+        $this->selectCount =$db->prepare("select count(*) as nb from produit");
+        $this->recherche = $db->prepare("select p.id,designation,description,prix,photo,t.libelle as type from produit p,type t where p.idType = t.id and designation like :recherche order by designation");
     }
 
-    public function insert($designation, $description, $prix, $idType) {
+    public function insert($designation, $description, $prix, $photo, $idType) {
         $r = true;
-        $this->insert->execute(array(':designation' => $designation, ':description' => $description, ':prix' => $prix, ':idType' => $idType));
+        $this->insert->execute(array(':designation' => $designation, ':description' => $description, ':prix' => $prix, ':photo' => $photo, ':idType' => $idType));
         if ($this->insert->errorCode() != 0) {
             print_r($this->insert->errorInfo());
             $r = false;
@@ -54,9 +61,9 @@ class Produit {
     }
 
     
-    public function update($id, $designation, $description, $prix, $idType) {
+    public function update($id, $designation, $description, $prix, $photo, $idType) {
         $r = true;
-        $this->update->execute(array(':designation' => $designation, ':description' => $description, ':prix' => $prix, ':idType' => $idType, ':id' => $id));
+        $this->update->execute(array(':designation' => $designation, ':description' => $description, ':prix' => $prix, ':photo' => $photo, ':idType' => $idType, ':id' => $id));
         if ($this->update->errorCode() != 0) {
             print_r($this->update->errorInfo());
             $r = false;
@@ -64,8 +71,41 @@ class Produit {
         return $r;
     }
 
+    public function delete($id) {
+        $r = true;
+        $this->delete->execute(array(':id' => $id));
+        if ($this->delete->errorCode() != 0) {
+            print_r($this->delete->errorInfo());
+            $r = false;
+        }
+        return $r;
+    }
 
+    public function selectLimit($inf, $limite){
+        $this->selectLimit->bindParam(':inf', $inf, PDO::PARAM_INT);
+        $this->selectLimit->bindParam(':limite', $limite, PDO::PARAM_INT);
+        $this->selectLimit->execute();
+        if ($this->selectLimit->errorCode()!=0){
+            print_r($this->selectLimit->errorInfo());
+        }
+        return $this->selectLimit->fetchAll();
+    }
 
+    public function selectCount(){
+        $this->selectCount->execute();
+        if ($this->selectCount->errorCode()!=0){
+        print_r($this->selectCount->errorInfo());
+        }
+        return $this->selectCount->fetch();
+       }
+
+    public function recherche($recherche){
+        $this->recherche->execute(array('recherche'=>'%'.$recherche.'%'));
+        if ($this->recherche->errorCode()!=0){
+        print_r($this->recherche->errorInfo());
+        }
+        return $this->recherche->fetchAll();
+       }
 
 }
 

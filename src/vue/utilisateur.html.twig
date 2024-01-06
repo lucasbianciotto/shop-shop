@@ -3,33 +3,44 @@
 {% block contenu %}
 
 {% if form.etat is defined %}
-{% if form.etat == true %}
-<h1 class="h3 mb-3 font-weight-normal">Suppression réussie</h1>
-{% else %}
-<h1 class="alert alert-danger" role="alert">Problème d'insertion</h1>
+    {% if form.etat == true %}
+        <h1 class="h3 mb-3 font-weight-normal">Suppression réussie</h1>
+    {% else %}
+        <h1 class="alert alert-danger" role="alert">Problème d'insertion</h1>
+    {% endif %}
 {% endif %}
-{% endif %}
+
 <form class="form-signin" action="index.php?page=utilisateur" method="post" enctype="application/x-www-form-urlencoded">
-<div class="table-responsive">
-<table class="table">
-<thead>
-<tr>
-<th scope="col">Email</th>
-<th scope="col">Nom</th>
-<th scope="col">Prénom</th>
-<th scope="col">Rôle</th>
-<th scope="col">Action</th>
-<th scope="col"></th>
-</tr>
-</thead>
-<tbody>
-{% for u in liste %}
-<tr><td>{{u.email}}</td><td>{{u.nom}}</td><td>{{u.prenom}}</td><td>{{u.libellerole}}</td><td><a class="btn btn-outline-primary" href="index?page=utilisateurModif&id={{u.id}}">Modifier</a> <a class="btn btn-outline-danger" href="index.php?page=utilisateur&id={{u.id}}">Supprimer</a></td><td><input type="checkbox" name="cocher[]" id="cocher[]" value="{{u.id}}" /></td></tr>
-{% endfor %}
-</tbody>
-</table>
-<button class="btn btn-lg btn-primary btn-block" type="submit" name="btSupprimer">Supprimer</button>
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">Email</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Prénom</th>
+                    <th scope="col">Rôle</th>
+                    <th scope="col">Action</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in liste %}
+                <tr>
+                    <td>{{u.email}}</td>
+                    <td>{{u.nom}}</td>
+                    <td>{{u.prenom}}</td>
+                    <td>{{u.libellerole}}</td>
+                    <td>
+                        <a class="btn btn-outline-primary" href="index?page=utilisateurModif&id={{u.id}}">Modifier</a> 
+                        <a class="btn btn-outline-danger" href="index.php?page=utilisateur&id={{u.id}}">Supprimer</a>
+                    </td>
+                    <td><input type="checkbox" name="cocher[]" id="cocher[]" value="{{u.id}}" /></td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button class="btn btn-primary" type="submit" name="btSupprimer">Supprimer</button>
+    </div>
 </form>
-</div>
 
 {% endblock %}

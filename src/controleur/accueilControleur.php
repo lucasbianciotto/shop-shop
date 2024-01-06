@@ -84,6 +84,42 @@ function aproposControleur($twig){
     header("Location:index.php");
     }
 
+    function rechercheControleur($twig, $db){
+        $form = array();
+        $liste = array();
+
+        if (isset($_GET['search'])){
+            $form['valide'] = true;
+            $recherche = $_GET['search'];
+            $form['search'] = $recherche;
+            $produit = new Produit($db);
+            $exec = $produit->recherche($recherche);
+            if ($exec){
+
+                $limite = 3;
+
+                // Gestion de la pagination en fonction des résultats de recherche
+                $page = isset($_GET['nopage']) ? intval($_GET['nopage']) : 0;
+                $inf = $page * $limite;
+
+                $form['produit'] = $exec;
+
+                // Utilisation des résultats de recherche pour la pagination
+                $nb = count($exec);
+                $form['nbpages'] = ceil($nb / $limite);
+                $form['nopage'] = $page;
+
+                // Sélection des résultats de recherche paginés
+                $liste = array_slice($exec, $inf, $limite);
+            } else{
+                $form['valide'] = false;
+                $form['message'] = 'Problème de recherche ';
+            }
+        }
+
+        
+        echo $twig->render('recherche.html.twig', array('form'=>$form , 'liste'=>$liste));
+       }
 
 
     

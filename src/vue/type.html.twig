@@ -2,24 +2,41 @@
 
 {% block contenu %}
 
+<h2>Liste des types</h2>
 
-<div class="table-responsive">
-<table class="table">
-<thead>
-<tr>
-<th scope="col">ID</th>
-<th scope="col">Libelle</th>
-<th scope="col">Action</th>
-</tr>
-</thead>
-<tbody>
-{% for u in liste %}
-<tr><td>{{u.id}}</td><td>{{u.libelle}}</td><td><a href="index.php?page=utilisateurModif&id={{u.id}}" class="btn btn-outline-primary">Modifier</a> <a class="btn btn-outline-danger" href="index.php?page=type&id={{u.id}}">Supprimer</a></td></tr>
-{% endfor %}
-</tbody>
-</table>
-<a class="btn btn-primary" href="index.php?page=addtype">Ajouter un Type</a>
+{% if form.message is defined %}
+    <div class="alert alert-success">{{form.message}}</div>
+{% endif %}
 
-</div>
+
+<form class="form-signin" action="index.php?page=type" method="post" enctype="application/x-www-form-urlencoded">
+    <div class="table-responsive">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Libelle</th>
+                    <th scope="col">Action</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in liste %}
+                    <tr>
+                        <td>{{u.id}}</td>
+                        <td>{{u.libelle}}</td>
+                        <td>
+                            <a href="index.php?page=typemodif&id={{u.id}}" class="btn btn-outline-primary">Modifier</a>
+                            <a href="index.php?page=type&id={{u.id}}" class="btn btn-outline-danger">Supprimer</a>
+                        </td>
+                        <td><input type="checkbox" name="cocher[]" id="cocher[]" value="{{u.id}}" /></td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <a href="index.php?page=addtype" class="btn btn-primary">Ajouter un type</a>
+    <button class="btn btn-primary" type="submit" name="btSupprimer">Supprimer</button>
+</form>
 
 {% endblock %}

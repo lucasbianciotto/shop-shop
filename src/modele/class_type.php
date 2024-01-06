@@ -9,6 +9,7 @@ class Type {
     private $connect;
     private $selectById;
     private $delete;
+    private $update;
 
     public function __construct($db) {
         $this->db = $db;
@@ -16,6 +17,7 @@ class Type {
         $this->connect = $this->db->prepare("select libelle from type where libelle=:libelle");
         $this->select = $db->prepare("select id, libelle from type order by libelle");
         $this->selectById = $db->prepare("select id, libelle from type where id=:id");
+        $this->update = $db->prepare("update type set libelle=:libelle where id=:id");
         $this->delete = $db->prepare("delete from type where id=:id");
     }
 
@@ -62,6 +64,15 @@ class Type {
         }
         return $r;
     }
+
+    public function update($id, $libelle){
+        $r = true;
+        $this->update->execute(array(':libelle'=>$libelle, ':id'=>$id));
+        if ($this->update->errorCode()!=0){ print_r($this->update->errorInfo());
+        $r=false;
+        }
+        return $r;
+       }
 
 
 

@@ -2,30 +2,71 @@
 
 {% block contenu %}
 
+{% if form.etat is defined %}
+    {% if form.etat == true %}
+        <h1 class="h3 mb-3 font-weight-normal">Suppression réussie</h1>
+    {% else %}
+        <h1 class="alert alert-danger" role="alert">Problème d'insertion</h1>
+    {% endif %}
+{% endif %}
 
-<div class="table-responsive">
-        <table class="table">
-            <thead>
-                <tr>
-                <th scope="col">ID</th>
-                <th scope="col">Designation</th>
-                <th scope="col">Description</th>
-                <th scope="col">Prix</th>
-                <th scope="col">Type</th>
-                <th scope="col">Action</th>
+{% if liste | length >0 %}
+
+<form class="form-signin" action="index.php?page=produit" method="post" enctype="application/x-www-form-urlencoded">
+    <div class="table-responsive">
+            <table class="table">
+                <thead>
+                    <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">Designation</th>
+                    <th scope="col">Description</th>
+                    <th scope="col">Prix</th>
+                    <th scope="col">Type</th>
+                    <th scope="col">Action</th>
+                    <th scope="col"></th>
+                    </tr>
+                </thead>
+            <tbody>
+                {% for p in liste %}
+                <tr><td>{{p.id}}</td>
+                <td>{{p.designation}}</td>
+                <td>{{p.description}}</td>
+                <td>{{p.prix}} €</td>
+                <td>{{form.types[p.idType]}}</td>
+                <td>
+                    <a class="btn btn-outline-primary" href="index.php?page=modifproduit&id={{p.id}}">Modifier</a> 
+                    <a class="btn btn-outline-danger" href="index.php?page=produit&id={{p.id}}">Supprimer</a>
+                </td>
+                <td><input type="checkbox" name="cocher[]" id="cocher[]" value="{{p.id}}" /></td>
                 </tr>
-            </thead>
-        <tbody>
-            {% for p in liste %}
-            <tr><td>{{p.id}}</td><td>{{p.designation}}</td><td>{{p.description}}</td><td>{{p.prix}} €</td><td>{{p.idType}}</td><td>
-            <a class="btn btn-outline-primary" href="index.php?page=modifproduit&id={{p.id}}">Modifier</a> 
-            <a class="btn btn-outline-danger" href="index.php?page=modifproduit&id={{p.id}}">Supprimer</a></td></tr>
-            {% endfor %}
-        </tbody>
-    </table>
+                {% endfor %}
+            </tbody>
+        </table>
 
-    <a class="btn btn-primary" href="index.php?page=addproduit">Ajouter un produit</a>
-</div>
+        <a class="btn btn-primary" href="index.php?page=addproduit">Ajouter un produit</a>
+        <button class="btn btn-primary" type="submit" name="btSupprimer">Supprimer</button>
+    </div>
+</form>
+
+{% set nb = form.nbpages %}
+
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center m-4 p-4">
+        <li class="page-item {% if form.nopage == 0 %}disabled{% endif %}">
+            <a class="page-link" href="index.php?page=produit&nopage={{ 0 }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
+        </li>
+        {% for i in 1..nb %}
+        <li class="page-item {% if i ==form.nopage +1 %} active{% endif %}">
+            <a class="page-link" href="index.php?page=produit&nopage={{ i-1 }}">{{ i }}<span class="sr- only"></span></a>
+        </li>
+        {% endfor %}
+            <li class="page-item {% if form.nopage == form.nbpages-1 %}disabled{% endif %}"><a class="page-link" href="index.php?page=produit&nopage={{ nb-1 }}" aria-label="Next" ><span aria-hidden="true">&raquo;</span></a>
+        </li>
+    </ul>
+</nav>
+{% else %}
+    <h1 class="text-center">Il n'y a pas de produit.</h1>
+{% endif %}
 
 {% endblock %}
 

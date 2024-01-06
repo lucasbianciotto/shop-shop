@@ -12,9 +12,11 @@ function getPage($db){
     $lesPages['maintenance'] = "maintenanceControler";
     $lesPages['type'] = "typeControleur";
     $lesPages['addtype'] = "addtypeControleur";
+    $lesPages['typemodif'] = "typeModifControleur";
     $lesPages['produit'] = "produitControleur";
     $lesPages['addproduit'] = "addproduitControleur";
     $lesPages['modifproduit'] = "produitModifControleur";
+    $lesPages['recherche'] = "rechercheControleur";
     
     if ($db!=null){
         if(isset($_GET['page'])){

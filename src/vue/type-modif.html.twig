@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+{% block title %} {{ parent() }} Modifier un Type {% endblock %}
+{% block contenu %}
+{% if form.type is defined %}
+{% if form.type != null %}
+<div class="container">
+    <h2>Modifier un Type</h2>
+
+    {% if form.message is defined %}
+    <h2 class="alert alert-danger" role="alert">{{ form.message }}</h2>
+    {% endif %}
+
+    {% if form.success is defined %}
+    <h2 class="alert alert-success" role="alert">{{ form.success }}</h2>
+    {% endif %}
+    
+
+    <form method="POST">
+        <div class="form-group">
+            <label for="inputLibelle">Libelle du Type :</label>
+            <input type="text" class="form-control" id="libelle" name="inputLibelle" placeholder="Entrez le libelle du Type" value="{{form.type.libelle}}" required>
+        </div>
+   
+        <input type="hidden" name="id" value="{{form.type.id}}">
+        <button type="submit" name="btnModifier" class="btn btn-primary">Modifier le libelle du Type</button>
+    </form>
+</div>
+{% else %}
+<h2 class="alert alert-danger" role="alert">{{ form.message }}</h2>
+<a href="index.php?page=utilisateur">Retourner sur la liste des types</a>
+{% endif %}
+{% else %}
+<h2 class="alert alert-danger" role="alert">{{ form.message }}</h2>
+<a href="index.php?page=utilisateur">Retourner sur la liste des types</a>
+{% endif %}
+{% endblock %}
