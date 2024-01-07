@@ -12,6 +12,8 @@ class Produit {
     private $selectLimit;
     private $selectCount;
     private $recherche;
+    private $selectIn;
+
 
     public function __construct($db) {
         $this->db = $db;
@@ -24,6 +26,7 @@ class Produit {
         $this->selectLimit = $db->prepare("select id, designation,description,prix, idType from produit order by designation limit :inf,:limite");
         $this->selectCount =$db->prepare("select count(*) as nb from produit");
         $this->recherche = $db->prepare("select p.id,designation,description,prix,photo,t.libelle as type from produit p,type t where p.idType = t.id and designation like :recherche order by designation");
+        $this->selectIn = $this->db->prepare("select id, designation, description, prix, photo, idType from produit where FIND_IN_SET(id, :ids)");
     }
 
     public function insert($designation, $description, $prix, $photo, $idType) {
@@ -106,6 +109,17 @@ class Produit {
         }
         return $this->recherche->fetchAll();
        }
+
+       public function selectIn($ids){
+        $implose = implode(',', $ids);
+        $this->selectIn->bindParam(':ids', $implose);
+        $this->selectIn->execute();
+        if ($this->selectIn->errorCode()!=0){
+        print_r($this->selectIn->errorInfo());
+        }
+        return $this->selectIn->fetchAll();
+        }
+       
 
 }
 

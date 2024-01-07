@@ -1,14 +1,13 @@
 -- phpMyAdmin SQL Dump
--- version 4.9.7
+-- version 5.2.0
 -- https://www.phpmyadmin.net/
 --
--- Hôte : 127.0.0.1:3308
--- Généré le : mer. 20 déc. 2023 à 14:16
--- Version du serveur :  5.7.36
--- Version de PHP : 7.4.26
+-- Hôte : 127.0.0.1
+-- Généré le : dim. 07 jan. 2024 à 19:25
+-- Version du serveur : 10.4.24-MariaDB
+-- Version de PHP : 8.1.6
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -25,29 +24,69 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
+-- Structure de la table `commande`
+--
+
+CREATE TABLE `commande` (
+  `id` int(11) NOT NULL,
+  `montant` decimal(10,2) NOT NULL,
+  `date` datetime NOT NULL,
+  `etat` int(11) NOT NULL,
+  `idUtilisateur` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `commande`
+--
+
+INSERT INTO `commande` (`id`, `montant`, `date`, `etat`, `idUtilisateur`) VALUES
+(1, '28760.00', '2024-01-07 18:20:41', 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Structure de la table `composer`
+--
+
+CREATE TABLE `composer` (
+  `idCommande` int(11) NOT NULL,
+  `idProduit` int(11) NOT NULL,
+  `qte` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+--
+-- Déchargement des données de la table `composer`
+--
+
+INSERT INTO `composer` (`idCommande`, `idProduit`, `qte`) VALUES
+(1, 32, 4);
+
+-- --------------------------------------------------------
+
+--
 -- Structure de la table `produit`
 --
 
-DROP TABLE IF EXISTS `produit`;
-CREATE TABLE IF NOT EXISTS `produit` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `produit` (
+  `id` int(11) NOT NULL,
   `designation` varchar(100) NOT NULL,
   `description` text NOT NULL,
   `prix` float NOT NULL,
-  `idType` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `idType` (`idType`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4;
+  `photo` varchar(255) DEFAULT NULL,
+  `idType` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `produit`
 --
 
-INSERT INTO `produit` (`id`, `designation`, `description`, `prix`, `idType`) VALUES
-(1, 'Shure SM7B', 'Micro XLR', 400, 1),
-(2, 'Rode Podmic', 'Micro XLR', 110, 1),
-(3, 'Blue Yeti', 'Micro USB', 100, 2),
-(4, 'Rode NT-USB', 'Microphone USB a condensateur polyvalent de qualite studio avec filtre anti-pop et trepied pour le streaming, les jeux, les podcasts, la production musicale.\r\n', 135, 1);
+INSERT INTO `produit` (`id`, `designation`, `description`, `prix`, `photo`, `idType`) VALUES
+(1, 'Shure SM7B', 'Le Shure-SM7B est un microphone dynamique à bobine mobile avec une directivité cardioïde, ce qui le rend idéal pour l\'enregistrement de la parole et de la voix, mais il se défends également bien lors de la prise d\'instruments. Une réponse en fréquences large et linéaire garantit une reproduction naturelle des voix et des instruments.', 388, '7109b5bSIDS._AC_UF1000_1000_QL80_.jpg', 3),
+(2, 'Rode Podmic', 'Micro voix dynamique pour enregistrement', 99, '61V2IPfjMEL.jpg', 3),
+(4, 'Rode NT-USB', 'Microphone USB a condensateur polyvalent de qualite studio avec filtre anti-pop et trepied pour le streaming, les jeux, les podcasts, la production musicale.\r\n', 129, '11557354_800.jpg', 1),
+(29, 'Blue Yeti', 'Micro USB Pour Enregistrer, Streaming, Gaming, Podcast, Micro Gaming Condensateur, Micro PC & Mac Avec Effets Blue VO!CE, Support Ajustable, Plug And Play', 139, '61vI0Zii07L.jpg', 1),
+(30, 'Universal Audio SC-1', 'Microphone à condensateur large membrane avec système de modélisation de microphone Hemisphere', 555, '18613668_800.jpg', 3),
+(32, 'Neumann M49V Set', 'Microphone à tube large membrane', 7190, '18341395_800.jpg', 3);
 
 -- --------------------------------------------------------
 
@@ -55,12 +94,10 @@ INSERT INTO `produit` (`id`, `designation`, `description`, `prix`, `idType`) VAL
 -- Structure de la table `role`
 --
 
-DROP TABLE IF EXISTS `role`;
-CREATE TABLE IF NOT EXISTS `role` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `libelle` varchar(50) CHARACTER SET utf8 NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `role` (
+  `id` int(11) NOT NULL,
+  `libelle` varchar(50) CHARACTER SET utf8 NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `role`
@@ -76,12 +113,10 @@ INSERT INTO `role` (`id`, `libelle`) VALUES
 -- Structure de la table `type`
 --
 
-DROP TABLE IF EXISTS `type`;
-CREATE TABLE IF NOT EXISTS `type` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `libelle` varchar(100) NOT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4;
+CREATE TABLE `type` (
+  `id` int(11) NOT NULL,
+  `libelle` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `type`
@@ -89,7 +124,7 @@ CREATE TABLE IF NOT EXISTS `type` (
 
 INSERT INTO `type` (`id`, `libelle`) VALUES
 (1, 'USB'),
-(2, 'XLR');
+(3, 'XLR');
 
 -- --------------------------------------------------------
 
@@ -97,29 +132,120 @@ INSERT INTO `type` (`id`, `libelle`) VALUES
 -- Structure de la table `utilisateur`
 --
 
-DROP TABLE IF EXISTS `utilisateur`;
-CREATE TABLE IF NOT EXISTS `utilisateur` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
+CREATE TABLE `utilisateur` (
+  `id` int(11) NOT NULL,
   `email` varchar(100) CHARACTER SET latin1 NOT NULL,
   `mdp` varchar(256) CHARACTER SET latin1 NOT NULL,
   `nom` varchar(100) CHARACTER SET latin1 NOT NULL,
   `prenom` varchar(100) CHARACTER SET latin1 NOT NULL,
   `idRole` int(11) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `email` (`email`),
-  KEY `idRole` (`idRole`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4;
+  `valider` tinyint(1) NOT NULL DEFAULT 0,
+  `idgenere` varchar(32) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
 --
 -- Déchargement des données de la table `utilisateur`
 --
 
-INSERT INTO `utilisateur` (`id`, `email`, `mdp`, `nom`, `prenom`, `idRole`) VALUES
-(1, 'bianciottolucas@gmail.com', '$2y$10$TWSsj4e9MtHAPLjsglLaYO89B16V1G8b4SKg40fmfmKYMdN0b9AZO', 'BIANCIOTTO', 'Lucas', 1);
+INSERT INTO `utilisateur` (`id`, `email`, `mdp`, `nom`, `prenom`, `idRole`, `valider`, `idgenere`) VALUES
+(1, 'bianciottolucas@gmail.com', '$2y$10$TWSsj4e9MtHAPLjsglLaYO89B16V1G8b4SKg40fmfmKYMdN0b9AZO', 'BIANCIOTTO', 'Lucas', 1, 1, ''),
+(8, 'lucaslauris84360@gmail.com', '$2y$10$hRRi/TvPysBbc4ZRAnP.Bue4reQDCWIWTca3AKrIrD92aQdzzym76', 'Test', 'Test', 2, 0, '659aeba32e8ea');
+
+--
+-- Index pour les tables déchargées
+--
+
+--
+-- Index pour la table `commande`
+--
+ALTER TABLE `commande`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `fk_util` (`idUtilisateur`);
+
+--
+-- Index pour la table `composer`
+--
+ALTER TABLE `composer`
+  ADD PRIMARY KEY (`idCommande`,`idProduit`),
+  ADD KEY `fk_produit` (`idProduit`);
+
+--
+-- Index pour la table `produit`
+--
+ALTER TABLE `produit`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `idType` (`idType`);
+
+--
+-- Index pour la table `role`
+--
+ALTER TABLE `role`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `type`
+--
+ALTER TABLE `type`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Index pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`),
+  ADD KEY `idRole` (`idRole`);
+
+--
+-- AUTO_INCREMENT pour les tables déchargées
+--
+
+--
+-- AUTO_INCREMENT pour la table `commande`
+--
+ALTER TABLE `commande`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
+-- AUTO_INCREMENT pour la table `produit`
+--
+ALTER TABLE `produit`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+
+--
+-- AUTO_INCREMENT pour la table `role`
+--
+ALTER TABLE `role`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+
+--
+-- AUTO_INCREMENT pour la table `type`
+--
+ALTER TABLE `type`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+
+--
+-- AUTO_INCREMENT pour la table `utilisateur`
+--
+ALTER TABLE `utilisateur`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- Contraintes pour les tables déchargées
 --
+
+--
+-- Contraintes pour la table `commande`
+--
+ALTER TABLE `commande`
+  ADD CONSTRAINT `fk_util` FOREIGN KEY (`idUtilisateur`) REFERENCES `utilisateur` (`id`);
+
+--
+-- Contraintes pour la table `composer`
+--
+ALTER TABLE `composer`
+  ADD CONSTRAINT `fk_commande` FOREIGN KEY (`idCommande`) REFERENCES `commande` (`id`),
+  ADD CONSTRAINT `fk_produit` FOREIGN KEY (`idProduit`) REFERENCES `produit` (`id`);
 
 --
 -- Contraintes pour la table `produit`

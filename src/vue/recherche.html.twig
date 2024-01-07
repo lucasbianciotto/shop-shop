@@ -1,35 +1,54 @@
 {% extends "base.html.twig" %}
-{% block title %} {{ parent() }} Résultat de votre recherche {% endblock %}
+{% block title %}{{ parent() }} Résultat de votre recherche{% endblock %}
 {% block contenu %}
-<h1>Résultat de votre recherche</h1>
+    <h1 class="mb-4">Résultat de votre recherche</h1>
 
-{% if form.produit|length == 0 %}
-    <p>Aucun produits ne correspond à votre recherche</p>
-{% else %}
-    <p>{{ form.produit|length }} produits correspondent à votre recherche</p>
-    <ul>
-        {% for produit in liste %}
-            <li>{{ produit.designation }}</a></li>
-        {% endfor %}
-    </ul>
-
-    {% set nb = form.nbpages %}
-
-    <nav aria-label="Page navigation">
-        <ul class="pagination justify-content-center m-4 p-4">
-            <li class="page-item {% if form.nopage == 0 %}disabled{% endif %}">
-                <a class="page-link" href="index.php?page=recherche&search={{form.search}}&nopage={{ 0 }}" aria-label="Previous"><span aria-hidden="true">&laquo;</span></a>
-            </li>
-            {% for i in 1..nb %}
-            <li class="page-item {% if i ==form.nopage +1 %} active{% endif %}">
-                <a class="page-link" href="index.php?page=recherche&search={{form.search}}&nopage={{ i-1 }}">{{ i }}<span class="sr- only"></span></a>
-            </li>
+    {% if form.produit|length == 0 %}
+        <p class="lead">Aucun produit ne correspond à votre recherche</p>
+    {% else %}
+        <div class="row">
+            {% for produit in liste %}
+                <div class="col-md-4">
+                    <div class="card product-card">
+                        {% if produit.photo is not empty %}
+                            <img src="images/{{ produit.photo }}" class="card-img-top" alt="Image du produit">
+                        {% else %}
+                            <img src="images/noimage.jpg" class="card-img-top" alt="Image du produit">
+                        {% endif %}
+                        <div class="card-body">
+                            <h2 class="card-title">{{ produit.designation }}</h2>
+                            {% if produit.description|length > 50 %}
+                                <p class="card-text">{{ produit.description|slice(0,50) }}...</p>
+                            {% else %}
+                                <p class="card-text">{{ produit.description }}</p>
+                            {% endif %}
+                            <p class="card-text">{{ produit.prix }} €</p>
+                            <a href="index.php?page=produitfiche&id={{ produit.id }}" class="btn btn-primary">Voir le produit</a>
+                        </div>
+                    </div>
+                </div>
             {% endfor %}
-                <li class="page-item {% if form.nopage == form.nbpages-1 %}disabled{% endif %}"><a class="page-link" href="index.php?page=rechercher&search={{form.search}}&nopage={{ nb-1 }}" aria-label="Next" ><span aria-hidden="true">&raquo;</span></a>
-            </li>
-        </ul>
-    </nav>
-{% endif %}
+        </div>
 
-
+        {% set nb = form.nbpages %}
+        <nav aria-label="Page navigation" class="mt-4">
+            <ul class="pagination justify-content-center">
+                <li class="page-item {% if form.nopage == 0 %}disabled{% endif %}">
+                    <a class="page-link" href="index.php?page=recherche&search={{ form.search }}&nopage={{ 0 }}" aria-label="Previous">
+                        <span aria-hidden="true">&laquo;</span>
+                    </a>
+                </li>
+                {% for i in 1..nb %}
+                    <li class="page-item {% if i == form.nopage + 1 %}active{% endif %}">
+                        <a class="page-link" href="index.php?page=recherche&search={{ form.search }}&nopage={{ i-1 }}">{{ i }}<span class="sr-only"></span></a>
+                    </li>
+                {% endfor %}
+                <li class="page-item {% if form.nopage == nb - 1 %}disabled{% endif %}">
+                    <a class="page-link" href="index.php?page=recherche&search={{ form.search }}&nopage={{ nb-1 }}" aria-label="Next">
+                        <span aria-hidden="true">&raquo;</span>
+                    </a>
+                </li>
+            </ul>
+        </nav>
+    {% endif %}
 {% endblock %}

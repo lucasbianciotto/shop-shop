@@ -31,7 +31,6 @@ function aproposControleur($twig){
     $inputPassword2 =$_POST['inputPassword2'];
     $nom = $_POST['inputNom'];
     $prenom =$_POST['inputPrenom'];
-    $role = $_POST['role'];
     $form['valide'] = true;
     if ($inputPassword!=$inputPassword2){
     $form['valide'] = false;
@@ -39,14 +38,36 @@ function aproposControleur($twig){
     }
     else{
     $utilisateur = new Utilisateur($db);
-    $exec = $utilisateur->insert($inputEmail, password_hash($inputPassword, PASSWORD_DEFAULT), $role, $nom, $prenom);
+    $idgenere = uniqid();
+    $exec = $utilisateur->insert($inputEmail, password_hash($inputPassword, PASSWORD_DEFAULT), 2, $nom, $prenom, $idgenere);
     if (!$exec){
     $form['valide'] = false;
     $form['message'] = 'Problème d\'insertion dans la table utilisateur ';
     }
     }
-    $form['email'] = $inputEmail;
-    $form['role'] = $role;
+    $form['email'] = $inputEmail;;
+
+    ini_set("SMTP", "smtp.gmail.com");
+    ini_set("smtp_port", "587");
+
+    $serveur = $_SERVER['HTTP_HOST']; // Adresse du serveur
+    $script = $_SERVER["SCRIPT_NAME"]; // Nom du fichier PHP exécuté
+    $email = $inputEmail;
+    $message = "
+    <html>
+    <head>
+    </head>
+    <body>
+    Bienvenue sur Shop-Shop, pour confirmer votre inscription, veuillez cliquer sur le lien
+    suivant :
+    <a href=\"http://$serveur$script?page=validation&email=$email&idgenere=$idgenere\">Valider
+    votre inscription</a>
+    </body>
+    </html>";
+    $headers[] = 'MIME-Version: 1.0';
+    $headers[] = 'Content-type: text/html; charset=utf-8';
+    $headers[] = 'From: Shop-Shop < audiohaven@gmail.com >';
+    mail($email, 'Inscription sur SHOP-SHOP', $message, implode("\n", $headers));
     }
     echo $twig->render('inscrire.html.twig', array('form'=>$form));
    }
@@ -66,8 +87,19 @@ function aproposControleur($twig){
     $form['message'] = 'Login ou mot de passe incorrect';
     }
     else{
-    $_SESSION['login'] = $inputEmail;
-    $_SESSION['role'] = $unUtilisateur['idRole']; header("Location:index.php");
+
+    if ($unUtilisateur['valider']==1){
+
+        $_SESSION['login'] = $inputEmail;
+        $_SESSION['role'] = $unUtilisateur['idRole']; 
+        
+        header("Location:index.php");
+    } else {
+        $form['valide'] = false;
+        $form['message'] = 'Compte non validé, vous avez reçu un mail de confirmation';
+    
+    }
+
     }
     }
     else{
@@ -119,6 +151,64 @@ function aproposControleur($twig){
 
         
         echo $twig->render('recherche.html.twig', array('form'=>$form , 'liste'=>$liste));
+       }
+
+       function panierControleur($twig,$db){
+            $form = array();
+            $liste = array();
+
+            if(isset($_POST['placerCommade'])){
+                $montant = $_POST['montant'];
+                $aujourdhui = new DateTime();
+                $aujourdhui->setTimezone(new DateTimeZone('Europe/Paris'));
+                $date = $aujourdhui->format("Y-m-d H:i:s");
+                $etat = 1;
+                $utilisateur = new Utilisateur($db);
+                $unUtil = $utilisateur->selectByEmail($_SESSION['login']);
+                $idUtilisateur = $unUtil['id'];
+                $form['valide'] = true;
+                $commande = new Commande($db);
+                $exec=$commande->insert($montant,$date,$etat,$idUtilisateur);
+                if(!$exec){
+                $form['valide'] = false;
+                $form['message'] = 'Problème de l\'enregistremet de la commande';
+                }else{
+                $maCommande = $commande->selectByDateCli($date,$idUtilisateur);
+                $composer = new Composer($db);
+                foreach ($_SESSION['panier'] as $k => $v) {
+                $execC = $composer->insert($maCommande['id'],$k,$v);
+                if(!$execC){
+                $form['erreur'] = 'Problème : au moins un produit n\'a pas été validé';
+                }
+                }
+                $form['message'] = 'Votre commande a été passée';
+                unset($_SESSION['panier']);
+                }
+               }else{
+    
+                    if (!empty($_SESSION['panier'])) {
+                        $ids = array_keys($_SESSION['panier']);
+                        $produits = new Produit($db);
+                        $liste = $produits->selectIn($ids);
+                    }
+
+                    if(isset($_GET['remove'])){
+                        unset($_SESSION['panier'][$_GET['remove']]);
+                    }
+                    
+                    if (isset($_POST['update'])) {
+                        foreach ($_POST as $k => $v) {
+                            if(strpos($k,'q-')!== false){
+                                $explose = explode('-',$k);
+                                $unid = (int)$explose[1];
+                                $_SESSION['panier'][$unid] = $v;
+                            }
+                        }
+                        header("Location:index.php?page=panier");
+                    }
+                }
+
+            echo $twig->render('panier.html.twig', array('form'=>$form,'liste'=>$liste));
        }
 
 

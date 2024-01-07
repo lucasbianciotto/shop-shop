@@ -1,3 +1,29 @@
 {% extends "base.html.twig" %}
 {% block title %} {{ parent() }} Accueil {% endblock %}
-{% block contenu %} <h1>Bienvenue sur SHOP- SHOP </h1> {% endblock %}
+{% block stylesheets %}
+    {# Include Bootstrap CSS link here if not already included in the base template #}
+    <link rel="stylesheet" href="path/to/bootstrap/css/bootstrap.min.css">
+    <style>
+        .jumbotron {
+            background-color: #f8f9fa;
+        }
+
+        .microphone-card {
+            max-width: 18rem;
+            margin-bottom: 20px;
+        }
+
+        .microphone-card img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+{% endblock %}
+{% block contenu %}
+    <div class="jumbotron">
+        <h1 class="display-4">Bienvenue sur AudioHaven</h1>
+        <p class="lead">Découvrez notre sélection de microphones de qualité professionnelle.</p>
+        <hr class="my-4">
+        <p>Explorez notre gamme de produits pour améliorer votre expérience audio.</p>
+    </div>
+{% endblock %}

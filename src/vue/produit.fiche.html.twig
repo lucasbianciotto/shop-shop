@@ -1,0 +1,42 @@
+{% extends "base.html.twig" %}
+
+{% block contenu %}
+
+    {% if form.message is not empty %}
+        <div class="alert alert-success" role="alert">
+            {{ form.message }}
+        </div>
+    {% endif %}
+
+
+    {% if form.produit is empty %}
+        <div class="alert alert-danger" role="alert">
+            Le produit demandé n'existe pas !
+        </div>
+    {% else %}
+         <div class="row pt-5">
+        {% if form.produit.photo is not empty %}
+            <div class="col-md-4">
+                <img src="images/{{ form.produit.photo }}" class="img-fluid" alt="{{ form.produit.photo }}" />
+            </div>
+        {% else %}
+            <div class="col-md-4">
+                <img src="images/noimage.jpg" class="img-fluid" alt="image du produit" />
+            </div>
+        {% endif %}
+
+        <div class="col-md-8">
+            <h2>{{ form.produit.designation }}</h2>
+            <p>{{ form.produit.description }}</p>
+            <p>{{ form.produit.prix }} €</p>
+
+            <form action="index.php?page=produitfiche" method="post" enctype="application/xwww-form-urlencoded">
+                <input type="hidden" name="id" value="{{ form.produit.id }}" />
+                <button class="btn btn-warning rounded-pill" type="submit" name="btAjoutP">Ajouter au panier</button>
+            </form>
+        </div>
+        </div>
+    {% endif %}
+
+   
+{% endblock %}

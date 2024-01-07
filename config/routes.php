@@ -1,38 +1,60 @@
 <?php
 function getPage($db){
-    $lesPages['accueil'] = "accueilControleur";
-    $lesPages['contact'] = "contactControleur";
-    $lesPages['apropos'] = "aproposControleur";
-    $lesPages['inscrire'] = "inscrireControleur";
-    $lesPages['connexion'] = "connexionControleur";
-    $lesPages['deconnexion'] = "deconnexionControleur";
-    $lesPages['utilisateur'] = "utilisateurControleur";
-    $lesPages['utilisateurModif'] = "utilisateurModifControleur";
-    $lesPages['mentionslegales'] = "mentionslegalesControleur";
-    $lesPages['maintenance'] = "maintenanceControler";
-    $lesPages['type'] = "typeControleur";
-    $lesPages['addtype'] = "addtypeControleur";
-    $lesPages['typemodif'] = "typeModifControleur";
-    $lesPages['produit'] = "produitControleur";
-    $lesPages['addproduit'] = "addproduitControleur";
-    $lesPages['modifproduit'] = "produitModifControleur";
-    $lesPages['recherche'] = "rechercheControleur";
+    $lesPages['accueil'] = "accueilControleur;0";
+    $lesPages['contact'] = "contactControleur;0";
+    $lesPages['apropos'] = "aproposControleur;0";
+    $lesPages['inscrire'] = "inscrireControleur;0";
+    $lesPages['connexion'] = "connexionControleur;0";
+    $lesPages['deconnexion'] = "deconnexionControleur;0";
+    $lesPages['maintenance'] = "maintenanceControler;0";
+    $lesPages['mentionslegales'] = "mentionslegalesControleur;0";
+    $lesPages['recherche'] = "rechercheControleur;0";
+    $lesPages['utilisateur'] = "utilisateurControleur;1";
+    $lesPages['utilisateurModif'] = "utilisateurModifControleur;1";
+    $lesPages['type'] = "typeControleur;1";
+    $lesPages['addtype'] = "addtypeControleur;1";
+    $lesPages['typemodif'] = "typeModifControleur;1";
+    $lesPages['produit'] = "produitControleur;1";
+    $lesPages['addproduit'] = "addproduitControleur;1";
+    $lesPages['modifproduit'] = "produitModifControleur;1";
+    $lesPages['produitfiche'] = "produitficheControleur;0";
+    $lesPages['panier'] = "panierControleur;0";
     
     if ($db!=null){
-        if(isset($_GET['page'])){
+        if (isset($_GET['page'])){
             $page = $_GET['page'];
-        } else{
+        }else{
             $page = 'accueil';
         }
         if (!isset($lesPages[$page])){
             $page = 'accueil';
         }
-            $contenu = $lesPages[$page];
+       
+        $explose = explode(";",$lesPages[$page]);
+
+        $role = $explose[1];
+        if ($role != 0){
+            if(isset($_SESSION['login'])){
+                if(isset($_SESSION['role'])){
+                    if($role!=$_SESSION['role']){
+                        $contenu = 'accueilControleur';
+                    }else{
+                        $contenu = $explose[0];
+                    }
+                }else{
+                    $contenu = 'accueilControleur';;
+                }
+            }else{
+                $contenu = 'accueilControleur';;
+            }
+        }else{
+            $contenu = $explose[0];
         }
-        else{
-            $contenu = $lesPages['maintenance'];
-        }
-        // La fonction envoie le contenu
-        return $contenu;
-        }
+
+    }else{
+        $contenu = $lesPages['maintenance'];
+    }
+
+    return $contenu;
+    }
 ?>

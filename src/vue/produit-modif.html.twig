@@ -25,21 +25,30 @@
                  <div class="row g-0">
                 {% if form.produit.photo is not empty %}
                     <div class="col-md-4 align-self-center">
-                        <img src="images/{{form.produit.photo}}" class="img-fluid" alt= "image du produit" />
+                        <img src="images/{{form.produit.photo}}" class="img-fluid" alt={{form.produit.photo}} />
+                    </div>
+                {% else %}
+                    <div class="col-md-4 align-self-center">
+                        <img src="images/noimage.jpg" class="img-fluid" alt= "image du produit" />
                     </div>
                 {% endif %}
                     <div class="col-md-8">
                         <div class="card-body">
                             <h2>{{form.produit.designation}}</h2>
-                            <p>{{form.produit.description}}</p>
+                             {% if form.produit.description|length > 50 %}
+                                <p>{{form.produit.description|slice(0,50)}}...</p>
+                            {% else %}
+                                <p>{{form.produit.description}}</p>
+                            {% endif %}
                             <p>{{form.produit.prix}} €</p>
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Acheter</button>
                         </div>
                     </div>
                     </div>
                 </div>
             
 
-                <form method="POST" action="index.php?page=modifproduit&id={{form.produit.id}}" > 
+                <form method="POST" action="index.php?page=modifproduit&id={{form.produit.id}}" enctype="multipart/form-data"> 
                     <div class="form-group">
                         <label for="inputDesignation">Nom du produit :</label>
                         <input type="text" class="form-control" id="nom" name="inputDesignation" placeholder="Entrez le nom du produit" value="{{form.produit.designation}}" required>
@@ -54,7 +63,7 @@
                     </div>
                     <div class="form-group">
                         <label for="inputPhoto">Photo :</label>
-                        <input type="file" class="form-control" id="inputPhoto" name="inputPhoto" placeholder="Entrez la photo du produit" value="{{form.produit.photo}}">
+                        <input type="file" class="form-control" id="inputPhoto" name="inputPhoto" placeholder="Entrez la photo du produit">
                     </div>
                     <div class="form-group">
                         <label for="idType">Type :</label>
