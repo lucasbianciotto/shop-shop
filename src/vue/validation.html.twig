@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+{% block title %} {{ parent() }} Accueil {% endblock %}
+{% block contenu %}
+    
+    {% if form.message is defined %}
+        <div class="alert alert-success">
+            {{ form.message }}
+        </div>
+    {% endif %}
+
+{% endblock %}
+

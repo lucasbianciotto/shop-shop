@@ -1,4 +1,8 @@
 <?php
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
 function accueilControleur($twig){
     echo $twig->render('accueil.html.twig', array());
 //  echo 'Page d\'accueil du site';
@@ -47,8 +51,12 @@ function aproposControleur($twig){
     }
     $form['email'] = $inputEmail;;
 
-    ini_set("SMTP", "smtp.gmail.com");
-    ini_set("smtp_port", "587");
+
+    // Import PhpMailer
+    require 'PHPMailer/src/Exception.php';
+    require 'PHPMailer/src/PHPMailer.php';
+    require 'PHPMailer/src/SMTP.php';
+    
 
     $serveur = $_SERVER['HTTP_HOST']; // Adresse du serveur
     $script = $_SERVER["SCRIPT_NAME"]; // Nom du fichier PHP exécuté
@@ -67,9 +75,57 @@ function aproposControleur($twig){
     $headers[] = 'MIME-Version: 1.0';
     $headers[] = 'Content-type: text/html; charset=utf-8';
     $headers[] = 'From: Shop-Shop < audiohaven@gmail.com >';
-    mail($email, 'Inscription sur SHOP-SHOP', $message, implode("\n", $headers));
+    
+    $mail = new PHPMailer();
+    $mail->isSMTP();
+    $mail->Host = '127.0.0.1';
+    $mail->Port = 1025;
+    $mail->SMTPAuth = false;
+    $mail->SMTPSecure = false;
+    $mail->setFrom('contact@audiohaven.com', 'AudioHaven');
+    $mail->addAddress($email);
+    $mail->Subject = 'Inscription sur AudioHaven';
+    $mail->Body = $message;
+    $mail->isHTML(true);
+    $mail->send();
+
     }
     echo $twig->render('inscrire.html.twig', array('form'=>$form));
+   }
+
+   function validationControleur($twig, $db){
+    $form = array();
+    if(isset($_GET['email']) && isset($_GET['idgenere'])){
+    $utilisateur = new Utilisateur($db);
+    $unUtilisateur = $utilisateur->selectByEmail($_GET['email']);
+    if($unUtilisateur!=null){
+    if($unUtilisateur['idgenere']==$_GET['idgenere']){
+    $form['valide'] = true;
+    $form['email'] = $_GET['email'];
+    $form['message'] = 'Utilisateur correct';
+    $exec=$utilisateur->updateValide($unUtilisateur['id']);
+    if(!$exec){
+    $form['valide'] = false;
+    $form['message'] = 'Erreur lors de la validation du compte';
+    } else {
+        header("Location:index.php");
+    }
+    }
+    else{
+    $form['valide'] = false;
+    $form['message'] = 'Utilisateur incorrect';
+    }
+    }
+    else{
+    $form['valide'] = false;
+    $form['message'] = 'Utilisateur incorrect';
+    }
+    }
+    else{
+    $form['valide'] = false;
+    $form['message'] = 'Utilisateur incorrect';
+    }
+    echo $twig->render('validation.html.twig', array('form'=>$form));
    }
 
    function connexionControleur($twig, $db){

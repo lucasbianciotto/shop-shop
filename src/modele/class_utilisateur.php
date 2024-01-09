@@ -19,7 +19,8 @@ $this->selectById = $db->prepare("select id, email, nom, prenom, idRole, valider
 $this->update = $db->prepare("update utilisateur set nom=:nom, prenom=:prenom, email=:email 
 where id=:id");
 $this->delete = $db->prepare("delete from utilisateur where id=:id");
-$this->selectByEmail = $db->prepare("select id, email, nom, prenom, idRole from utilisateur where email=:email");
+$this->selectByEmail = $db->prepare("select id, email, nom, prenom, idRole, idgenere from utilisateur where email=:email");
+
  }
  public function insert($email, $mdp, $role, $nom, $prenom, $idgenere){
  $r = true;
@@ -79,6 +80,17 @@ $this->selectByEmail = $db->prepare("select id, email, nom, prenom, idRole from 
                 return $this->selectByEmail->fetch();
                 }
            
+                public function updateValide($id){
+                    $r = true;
+                    $sql = "update utilisateur set valider=1 where id=:id";
+                    $stmt = $this->db->prepare($sql);
+                    $stmt->execute(array(':id'=>$id));
+                    if ($stmt->errorCode()!=0){
+                    print_r($stmt->errorInfo());
+                    $r=false;
+                    }
+                    return $r;
+                    }
 
 
 }

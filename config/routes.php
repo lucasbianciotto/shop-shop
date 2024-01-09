@@ -6,7 +6,7 @@ function getPage($db){
     $lesPages['inscrire'] = "inscrireControleur;0";
     $lesPages['connexion'] = "connexionControleur;0";
     $lesPages['deconnexion'] = "deconnexionControleur;0";
-    $lesPages['maintenance'] = "maintenanceControler;0";
+    $lesPages['maintenance'] = "maintenanceControler";
     $lesPages['mentionslegales'] = "mentionslegalesControleur;0";
     $lesPages['recherche'] = "rechercheControleur;0";
     $lesPages['utilisateur'] = "utilisateurControleur;1";
@@ -19,6 +19,7 @@ function getPage($db){
     $lesPages['modifproduit'] = "produitModifControleur;1";
     $lesPages['produitfiche'] = "produitficheControleur;0";
     $lesPages['panier'] = "panierControleur;0";
+    $lesPages['validation'] = "validationControleur;0";
     
     if ($db!=null){
         if (isset($_GET['page'])){
