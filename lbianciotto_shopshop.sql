@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 14 jan. 2024 à 17:43
+-- Généré le : ven. 07 juin 2024 à 16:14
 -- Version du serveur : 10.4.24-MariaDB
 -- Version de PHP : 8.1.6
 
@@ -40,7 +40,8 @@ CREATE TABLE `commande` (
 --
 
 INSERT INTO `commande` (`id`, `montant`, `date`, `etat`, `idUtilisateur`) VALUES
-(1, '28760.00', '2024-01-07 18:20:41', 1, 1);
+(1, '28760.00', '2024-01-07 18:20:41', 1, 1),
+(2, '698.00', '2024-06-05 15:23:56', 1, 11);
 
 -- --------------------------------------------------------
 
@@ -59,7 +60,8 @@ CREATE TABLE `composer` (
 --
 
 INSERT INTO `composer` (`idCommande`, `idProduit`, `qte`) VALUES
-(1, 32, 4);
+(1, 32, 4),
+(2, 34, 2);
 
 -- --------------------------------------------------------
 
@@ -90,7 +92,8 @@ INSERT INTO `produit` (`id`, `designation`, `description`, `prix`, `photo`, `idT
 (33, 'AKG C414 XLII', 'Micro à condensateur large membrane', 1045, '9508381_800.jpg', 3),
 (34, 'Aston Microphones Spirit', 'Microphone à condensateur large diaphragme', 349, '10774965_800.jpg', 3),
 (35, 'the t.bone MB 7 Beta', 'Microphone dynamique de diffusion', 79, '15869078_800.jpg', 3),
-(36, 'Bird Woodbrass UM1 Noir', 'Micro de studio\r\nUn excellent rapport qualité/prix. Idéal pour le studio, l\'animation de webradio\r\nLe Bird UM1 est un micro de studio d\'excellente qualité avec interface USB intégrée. C\'est une solution idéale et tout-en-un qui évite d\'avoir à acheter un préampli ou une interface audio supplémentaire.', 49, '71dIzQ71LvL.jpg', 1);
+(36, 'Bird Woodbrass UM1 Noir', 'Micro de studio\r\nUn excellent rapport qualité/prix. Idéal pour le studio, l\'animation de webradio\r\nLe Bird UM1 est un micro de studio d\'excellente qualité avec interface USB intégrée. C\'est une solution idéale et tout-en-un qui évite d\'avoir à acheter un préampli ou une interface audio supplémentaire.', 49, '71dIzQ71LvL.jpg', 1),
+(37, 'Test', 'Test', 145, 'image1.png', 1);
 
 -- --------------------------------------------------------
 
@@ -153,7 +156,7 @@ CREATE TABLE `utilisateur` (
 
 INSERT INTO `utilisateur` (`id`, `email`, `mdp`, `nom`, `prenom`, `idRole`, `valider`, `idgenere`) VALUES
 (1, 'bianciottolucas@gmail.com', '$2y$10$TWSsj4e9MtHAPLjsglLaYO89B16V1G8b4SKg40fmfmKYMdN0b9AZO', 'BIANCIOTTO', 'Lucas', 1, 1, ''),
-(8, 'lucaslauris84360@gmail.com', '$2y$10$hRRi/TvPysBbc4ZRAnP.Bue4reQDCWIWTca3AKrIrD92aQdzzym76', 'Test', 'Test', 2, 0, '659aeba32e8ea');
+(11, 'lucaslauris84360@gmail.com', '$2y$10$3U/Gj9dqIT9DWok.3m5m4.DwdDf2nMXEWBSFp3Wz7IeVfgzqOun56', 'BIANCIOTTO', 'Lucas', 1, 1, '66605e492a51c');
 
 --
 -- Index pour les tables déchargées
@@ -208,13 +211,13 @@ ALTER TABLE `utilisateur`
 -- AUTO_INCREMENT pour la table `commande`
 --
 ALTER TABLE `commande`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT pour la table `produit`
 --
 ALTER TABLE `produit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- AUTO_INCREMENT pour la table `role`
@@ -226,13 +229,13 @@ ALTER TABLE `role`
 -- AUTO_INCREMENT pour la table `type`
 --
 ALTER TABLE `type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
 
 --
 -- AUTO_INCREMENT pour la table `utilisateur`
 --
 ALTER TABLE `utilisateur`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=9;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
 
 --
 -- Contraintes pour les tables déchargées
