@@ -43,6 +43,9 @@
         <input class="form-control mr-sm-2" type="search" name="search" placeholder="Tapez votre recherche">
         <button class="btn btn-outline-primary my-2 my-sm-0" type="submit" >Rechercher</button>
       </form>
+      <li class="nav-item">
+        <a class="nav-link" href="index.php?page=panier">Panier</a>
+      </li>
       {% if session.login is defined %}
         <li class="nav-item">
           <a class="nav-link" href="#">{{ session.login }}</a>

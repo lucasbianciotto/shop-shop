@@ -58,7 +58,7 @@ function produitControleur($twig, $db)
         $form['etat'] = $_GET['etat'];
     }
 
-    $limite=3;
+    $limite=5;
 
     if(!isset($_GET['nopage'])){
         $inf=0;

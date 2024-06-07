@@ -23,7 +23,7 @@ class Produit {
         $this->selectById = $db->prepare("select * from produit where id=:id");
         $this->update = $db->prepare("update produit set designation=:designation, description=:description, prix=:prix, photo=:photo, idType=:idType where id=:id");
         $this->delete = $db->prepare("delete from produit where id=:id");
-        $this->selectLimit = $db->prepare("select id, designation,description,prix, idType from produit order by designation limit :inf,:limite");
+        $this->selectLimit = $db->prepare("select id, designation,description,prix, idType, photo from produit order by designation limit :inf,:limite");
         $this->selectCount =$db->prepare("select count(*) as nb from produit");
         $this->recherche = $db->prepare("select p.id,designation,description,prix,photo,t.libelle as type from produit p,type t where p.idType = t.id and designation like :recherche order by designation");
         $this->selectIn = $this->db->prepare("select id, designation, description, prix, photo, idType from produit where FIND_IN_SET(id, :ids)");

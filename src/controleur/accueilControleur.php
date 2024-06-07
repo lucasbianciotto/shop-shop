@@ -2,6 +2,7 @@
 
 use PHPMailer\PHPMailer\PHPMailer;
 use PHPMailer\PHPMailer\Exception;
+use Spipu\Html2Pdf\Html2Pdf;
 
 function accueilControleur($twig){
     echo $twig->render('accueil.html.twig', array());
@@ -30,64 +31,70 @@ function aproposControleur($twig){
    function inscrireControleur($twig, $db){
     $form = array();
     if (isset($_POST['btInscrire'])){
-    $inputEmail = $_POST['inputEmail'];
-    $inputPassword = $_POST['inputPassword'];
-    $inputPassword2 =$_POST['inputPassword2'];
-    $nom = $_POST['inputNom'];
-    $prenom =$_POST['inputPrenom'];
-    $form['valide'] = true;
-    if ($inputPassword!=$inputPassword2){
-    $form['valide'] = false;
-    $form['message'] = 'Les mots de passe sont différents';
-    }
-    else{
-    $utilisateur = new Utilisateur($db);
-    $idgenere = uniqid();
-    $exec = $utilisateur->insert($inputEmail, password_hash($inputPassword, PASSWORD_DEFAULT), 2, $nom, $prenom, $idgenere);
-    if (!$exec){
-    $form['valide'] = false;
-    $form['message'] = 'Problème d\'insertion dans la table utilisateur ';
-    }
-    }
-    $form['email'] = $inputEmail;;
+        $inputEmail = $_POST['inputEmail'];
+        $inputPassword = $_POST['inputPassword'];
+        $inputPassword2 =$_POST['inputPassword2'];
+        $nom = $_POST['inputNom'];
+        $prenom =$_POST['inputPrenom'];
+        $form['valide'] = true;
+        if ($inputPassword!=$inputPassword2){
+            $form['valide'] = false;
+            $form['message'] = 'Les mots de passe sont différents';
+        } else{
+            if (strlen($inputPassword)<12){
+                $form['valide'] = false;
+                $form['message'] = 'Le mot de passe doit contenir au moins 12 caractères';
+            } else {
+
+                $utilisateur = new Utilisateur($db);
+                $idgenere = uniqid();
+                $exec = $utilisateur->insert($inputEmail, password_hash($inputPassword, PASSWORD_DEFAULT), 2, $nom, $prenom, $idgenere);
+                if (!$exec){
+                    $form['valide'] = false;
+                    $form['message'] = 'Problème d\'insertion dans la table utilisateur ';
+                }
+                $form['email'] = $inputEmail;;
 
 
-    // Import PhpMailer
-    require 'PHPMailer/src/Exception.php';
-    require 'PHPMailer/src/PHPMailer.php';
-    require 'PHPMailer/src/SMTP.php';
-    
+                // Import PhpMailer
+                require 'PHPMailer/src/Exception.php';
+                require 'PHPMailer/src/PHPMailer.php';
+                require 'PHPMailer/src/SMTP.php';
 
-    $serveur = $_SERVER['HTTP_HOST']; // Adresse du serveur
-    $script = $_SERVER["SCRIPT_NAME"]; // Nom du fichier PHP exécuté
-    $email = $inputEmail;
-    $message = "
-    <html>
-    <head>
-    </head>
-    <body>
-    Bienvenue sur Shop-Shop, pour confirmer votre inscription, veuillez cliquer sur le lien
-    suivant :
-    <a href=\"http://$serveur$script?page=validation&email=$email&idgenere=$idgenere\">Valider
-    votre inscription</a>
-    </body>
-    </html>";
-    $headers[] = 'MIME-Version: 1.0';
-    $headers[] = 'Content-type: text/html; charset=utf-8';
-    $headers[] = 'From: Shop-Shop < audiohaven@gmail.com >';
-    
-    $mail = new PHPMailer();
-    $mail->isSMTP();
-    $mail->Host = '127.0.0.1';
-    $mail->Port = 1025;
-    $mail->SMTPAuth = false;
-    $mail->SMTPSecure = false;
-    $mail->setFrom('contact@audiohaven.com', 'AudioHaven');
-    $mail->addAddress($email);
-    $mail->Subject = 'Inscription sur AudioHaven';
-    $mail->Body = $message;
-    $mail->isHTML(true);
-    $mail->send();
+
+                $serveur = $_SERVER['HTTP_HOST']; // Adresse du serveur
+                $script = $_SERVER["SCRIPT_NAME"]; // Nom du fichier PHP exécuté
+                $email = $inputEmail;
+                $message = "
+                <html>
+                <head>
+                </head>
+                <body>
+                Bienvenue sur Shop-Shop, pour confirmer votre inscription, veuillez cliquer sur le lien
+                suivant :
+                <a href=\"http://$serveur$script?page=validation&email=$email&idgenere=$idgenere\">Valider
+                votre inscription</a>
+                </body>
+                </html>";
+                $headers[] = 'MIME-Version: 1.0';
+                $headers[] = 'Content-type: text/html; charset=utf-8';
+                $headers[] = 'From: Shop-Shop < audiohaven@gmail.com >';
+
+                $mail = new PHPMailer();
+                $mail->isSMTP();
+                $mail->Host = '127.0.0.1';
+                $mail->Port = 1025;
+                $mail->SMTPAuth = false;
+                $mail->SMTPSecure = false;
+                $mail->setFrom('contact@audiohaven.com', 'AudioHaven');
+                $mail->addAddress($email);
+                $mail->Subject = 'Inscription sur AudioHaven';
+                $mail->Body = $message;
+                $mail->isHTML(true);
+                $mail->send();
+            }
+
+        }
 
     }
     echo $twig->render('inscrire.html.twig', array('form'=>$form));
@@ -214,31 +221,38 @@ function aproposControleur($twig){
             $liste = array();
 
             if(isset($_POST['placerCommade'])){
-                $montant = $_POST['montant'];
-                $aujourdhui = new DateTime();
-                $aujourdhui->setTimezone(new DateTimeZone('Europe/Paris'));
-                $date = $aujourdhui->format("Y-m-d H:i:s");
-                $etat = 1;
-                $utilisateur = new Utilisateur($db);
-                $unUtil = $utilisateur->selectByEmail($_SESSION['login']);
-                $idUtilisateur = $unUtil['id'];
-                $form['valide'] = true;
-                $commande = new Commande($db);
-                $exec=$commande->insert($montant,$date,$etat,$idUtilisateur);
-                if(!$exec){
-                $form['valide'] = false;
-                $form['message'] = 'Problème de l\'enregistremet de la commande';
+                // si utilisateur n'est pas connecté ecrire un message d'erreur
+                if(!isset($_SESSION['login'])){
+                    $form['valide'] = false;
+                    $form['message'] = 'Vous devez être connecté pour passer une commande';
                 }else{
-                $maCommande = $commande->selectByDateCli($date,$idUtilisateur);
-                $composer = new Composer($db);
-                foreach ($_SESSION['panier'] as $k => $v) {
-                $execC = $composer->insert($maCommande['id'],$k,$v);
-                if(!$execC){
-                $form['erreur'] = 'Problème : au moins un produit n\'a pas été validé';
-                }
-                }
-                $form['message'] = 'Votre commande a été passée';
-                unset($_SESSION['panier']);
+
+                    $montant = $_POST['montant'];
+                    $aujourdhui = new DateTime();
+                    $aujourdhui->setTimezone(new DateTimeZone('Europe/Paris'));
+                    $date = $aujourdhui->format("Y-m-d H:i:s");
+                    $etat = 1;
+                    $utilisateur = new Utilisateur($db);
+                    $unUtil = $utilisateur->selectByEmail($_SESSION['login']);
+                    $idUtilisateur = $unUtil['id'];
+                    $form['valide'] = true;
+                    $commande = new Commande($db);
+                    $exec=$commande->insert($montant,$date,$etat,$idUtilisateur);
+                    if(!$exec){
+                    $form['valide'] = false;
+                    $form['message'] = 'Problème de l\'enregistremet de la commande';
+                    }else{
+                    $maCommande = $commande->selectByDateCli($date,$idUtilisateur);
+                    $composer = new Composer($db);
+                    foreach ($_SESSION['panier'] as $k => $v) {
+                    $execC = $composer->insert($maCommande['id'],$k,$v);
+                    if(!$execC){
+                    $form['erreur'] = 'Problème : au moins un produit n\'a pas été validé';
+                    }
+                    }
+                    $form['message'] = 'Votre commande a été passée';
+                    unset($_SESSION['panier']);
+                    }
                 }
                }else{
     
@@ -267,6 +281,21 @@ function aproposControleur($twig){
             echo $twig->render('panier.html.twig', array('form'=>$form,'liste'=>$liste));
        }
 
+
+    //    function actionListeProduitPdf($twig, $db){
+    //     $produit = new Produit($db);
+    //     $liste = $unProduit = $produit->select();
+    //     $html = $twig->render('produit-liste-pdf.html.twig', array('liste'=>$liste));
+    //     try {
+    //     ob_end_clean(); // Cette commande s'assure de ne pas envoyer de données avant le fichier PDF
+    //     $html2pdf = new Html2Pdf('P', 'A4', 'fr');
+    //     $html2pdf→writeHTML($html); 
+    //     $html2pdf->output('listedesproduits.pdf');
+    //     } catch (Html2PdfException $e) {
+    //     echo 'erreur '.$e;
+    //     }
+    //    }
+       
 
     
 

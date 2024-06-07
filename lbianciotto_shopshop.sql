@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1
--- Généré le : dim. 07 jan. 2024 à 19:25
+-- Généré le : dim. 14 jan. 2024 à 17:43
 -- Version du serveur : 10.4.24-MariaDB
 -- Version de PHP : 8.1.6
 
@@ -86,7 +86,11 @@ INSERT INTO `produit` (`id`, `designation`, `description`, `prix`, `photo`, `idT
 (4, 'Rode NT-USB', 'Microphone USB a condensateur polyvalent de qualite studio avec filtre anti-pop et trepied pour le streaming, les jeux, les podcasts, la production musicale.\r\n', 129, '11557354_800.jpg', 1),
 (29, 'Blue Yeti', 'Micro USB Pour Enregistrer, Streaming, Gaming, Podcast, Micro Gaming Condensateur, Micro PC & Mac Avec Effets Blue VO!CE, Support Ajustable, Plug And Play', 139, '61vI0Zii07L.jpg', 1),
 (30, 'Universal Audio SC-1', 'Microphone à condensateur large membrane avec système de modélisation de microphone Hemisphere', 555, '18613668_800.jpg', 3),
-(32, 'Neumann M49V Set', 'Microphone à tube large membrane', 7190, '18341395_800.jpg', 3);
+(32, 'Neumann M49V Set', 'Microphone à tube large membrane', 7190, '18341395_800.jpg', 3),
+(33, 'AKG C414 XLII', 'Micro à condensateur large membrane', 1045, '9508381_800.jpg', 3),
+(34, 'Aston Microphones Spirit', 'Microphone à condensateur large diaphragme', 349, '10774965_800.jpg', 3),
+(35, 'the t.bone MB 7 Beta', 'Microphone dynamique de diffusion', 79, '15869078_800.jpg', 3),
+(36, 'Bird Woodbrass UM1 Noir', 'Micro de studio\r\nUn excellent rapport qualité/prix. Idéal pour le studio, l\'animation de webradio\r\nLe Bird UM1 est un micro de studio d\'excellente qualité avec interface USB intégrée. C\'est une solution idéale et tout-en-un qui évite d\'avoir à acheter un préampli ou une interface audio supplémentaire.', 49, '71dIzQ71LvL.jpg', 1);
 
 -- --------------------------------------------------------
 
@@ -210,7 +214,7 @@ ALTER TABLE `commande`
 -- AUTO_INCREMENT pour la table `produit`
 --
 ALTER TABLE `produit`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 
 --
 -- AUTO_INCREMENT pour la table `role`
